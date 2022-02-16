@@ -12,6 +12,7 @@ import com.liwg.redisstudy.constant.BilibiliAPI;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -21,6 +22,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 @Log4j2
+@Service
 public class BilibiliDelegete {
     private static final String UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
 
