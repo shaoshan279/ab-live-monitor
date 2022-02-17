@@ -3,6 +3,8 @@ package com.liwg.redisstudy.service;
 
 import cn.hutool.json.JSONObject;
 
+import java.util.List;
+
 public interface BiliLiveService {
-    JSONObject getLiveRooms();
+    List getLiveRooms();
 }
