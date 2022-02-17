@@ -38,7 +38,7 @@ public class BiliLiveServiceImpl implements BiliLiveService {
                 JSONObject data = (JSONObject) livingList.get("data");
                 JSONArray jsonArray = (JSONArray) data.get("list");
                 for (int k = 0; k < jsonArray.size(); k++) {
-                    
+
                 }
                 if (livingList.get("code").equals(0)){
                     page++;
