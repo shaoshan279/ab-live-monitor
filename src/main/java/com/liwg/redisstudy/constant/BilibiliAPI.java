@@ -23,6 +23,11 @@ public interface BilibiliAPI {
     String ROOM_INFO_V2 = "https://api.live.bilibili.com/room/v1/Room/get_info_by_id";
 
     /**
+     * 获取直播间信息
+     */
+    String ROOM_INFO_WEB_V1 = "https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom";
+
+    /**
      * web获取直播间信息
      */
     String WEB_GET_ROOM_INFO ="https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom";

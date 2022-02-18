@@ -17,7 +17,7 @@ public class BiliLiveServiceImpl implements BiliLiveService {
 
     private int areaIds[] = { 1 , 2, 3, 4, 5 ,6};
 
-    private static volatile List<String> list;
+    private static volatile List<String> roomsOfNoFilter;
 
     @Autowired
     private BilibiliDelegete bilibiliDelegete;
@@ -26,7 +26,7 @@ public class BiliLiveServiceImpl implements BiliLiveService {
     private RedisUtil redisUtil;
 
     @Override
-    public JSONObject getLiveRooms() {
+    public List getLiveRooms() {
         int page ;
         int pageSize = 100;
         int areaCount[] = getAreaCount();
@@ -34,20 +34,57 @@ public class BiliLiveServiceImpl implements BiliLiveService {
             page = 1;
             do{
                 JSONObject livingList = bilibiliDelegete.onLivingList(String.valueOf(i), String.valueOf(page), String.valueOf(pageSize), "online");
-                JSONObject data = (JSONObject) livingList.get("data");
-                JSONArray jsonArray = (JSONArray) data.get("list");
-                for (int j = 0; j < jsonArray.size(); j++) {
-                    String roomid = (String) jsonArray.getJSONObject(j).get("roomid");
-                    list.add(roomid);
-                }
                 if (livingList.get("code").equals(0)){
+                    JSONObject data = (JSONObject) livingList.get("data");
+                    JSONArray jsonArray = (JSONArray) data.get("list");
+                    for (int j = 0; j < jsonArray.size(); j++) {
+                        String roomid = (String) jsonArray.getJSONObject(j).get("roomid");
+                        roomsOfNoFilter.add(roomid);
+                    }
                     page++;
                 }
             }while (page<Math.ceil(areaCount[i]/pageSize));
-            redisUtil.lSet("roomsNoFilter",list);
+            redisUtil.lSet("roomsNoFilter",roomsOfNoFilter);
         }
-        return null;
+        return roomsOfNoFilter;
     }
+
+    /**
+     * live是否在线
+     * @param roomid
+     * @return
+     */
+    public Boolean isLive(String roomid){
+        if (roomid.isEmpty()){
+            return false;
+        }
+        JSONObject roomInfo = bilibiliDelegete.getRoomInfo(roomid);
+        JSONObject data= (JSONObject) roomInfo.get("data");
+        JSONObject room_info = (JSONObject) data.get("room_info");
+        boolean live_status = room_info.get("live_status").equals("1");
+        return live_status;
+    }
+
+
+    /**
+     *
+     * @param roomid
+     * @return
+     */
+    public Boolean getInfo(String roomid){
+        if (roomid.isEmpty()){
+            return false;
+        }
+        JSONObject roomInfo = bilibiliDelegete.getRoomInfo(roomid);
+        JSONObject data= (JSONObject) roomInfo.get("data");
+        JSONObject room_info = (JSONObject) data.get("room_info");
+        boolean live_status = room_info.get("live_status").equals("1");
+        return live_status;
+    }
+
+
+
+
 
     /**
      * 获取各分区直播数量
