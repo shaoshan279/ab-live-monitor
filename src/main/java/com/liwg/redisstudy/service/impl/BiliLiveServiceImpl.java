@@ -19,9 +19,12 @@ import java.util.concurrent.Executors;
 public class BiliLiveServiceImpl implements BiliLiveService {
 
     private int areaIds[] = {1, 2, 3, 4, 5, 6};
+    @Autowired
+    private static volatile List<Integer> roomsOfFilter = new ArrayList<>();
 
     @Autowired
     private static volatile List<Integer> list = new ArrayList<>();
+
 
     @Autowired
     private BilibiliDelegete bilibiliDelegete;
@@ -37,30 +40,28 @@ public class BiliLiveServiceImpl implements BiliLiveService {
         for (int i = 0; i < areaIds.length; i++) {
             final int ii = i;
             pool.execute(()->
-            {
-                int page = 1;
-            do {
-                JSONObject livingList = bilibiliDelegete.onLivingList(String.valueOf(ii), String.valueOf(page), String.valueOf(pageSize), "online");
-                JSONObject data = (JSONObject) livingList.get("data");
-                JSONArray jsonArray = (JSONArray) data.get("list");
-                System.out.println(Thread.currentThread().getName()+ "=>" +jsonArray.size());
-                for (int j = 0; j < jsonArray.size(); j++) {
-                    int roomid = (int) jsonArray.getJSONObject(j).get("roomid");
+                    {
+                        int page = 1;
+                        do {
+                            JSONObject livingList = bilibiliDelegete.onLivingList(String.valueOf(ii), String.valueOf(page), String.valueOf(pageSize), "online");
+                            JSONObject data = (JSONObject) livingList.get("data");
+                            JSONArray jsonArray = (JSONArray) data.get("list");
+                            for (int j = 0; j < jsonArray.size(); j++) {
+                                int roomid = (int) jsonArray.getJSONObject(j).get("roomid");
 //                    System.out.println(Thread.currentThread().getName()+ "=>" + roomid);
-                    list.add(roomid);
-                }
-                System.out.println(Thread.currentThread().getName()+ "=>" + page);
-                if (livingList.get("code").equals(0)) {
-                    page++;
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } while (page < 3);
-//            Math.ceil(areaCount[ii] / pageSize)
-            }
+                                list.add(roomid);
+                            }
+
+                            if (livingList.get("code").equals(0)) {
+                                page++;
+                            }
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        } while (page < Math.ceil(areaCount[ii] / pageSize));
+                    }
             );
         }
         pool.shutdown();
@@ -85,7 +86,41 @@ public class BiliLiveServiceImpl implements BiliLiveService {
     }
 
     public List filterAnchor(){
+
         return null;
+    }
+
+    /**
+     * live是否在线
+     * @param roomid
+     * @return
+     */
+    public Boolean isLive(String roomid){
+        if (roomid.isEmpty()){
+            return false;
+        }
+        JSONObject roomInfo = bilibiliDelegete.getRoomInfo(roomid);
+        JSONObject data= (JSONObject) roomInfo.get("data");
+        JSONObject room_info = (JSONObject) data.get("room_info");
+        boolean live_status = room_info.get("live_status").equals("1");
+        return live_status;
+    }
+
+
+    /**
+     *
+     * @param roomid
+     * @return
+     */
+    public Boolean getInfo(String roomid){
+        if (roomid.isEmpty()){
+            return false;
+        }
+        JSONObject roomInfo = bilibiliDelegete.getRoomInfo(roomid);
+        JSONObject data= (JSONObject) roomInfo.get("data");
+        JSONObject room_info = (JSONObject) data.get("room_info");
+        boolean live_status = room_info.get("live_status").equals("1");
+        return live_status;
     }
 
 
