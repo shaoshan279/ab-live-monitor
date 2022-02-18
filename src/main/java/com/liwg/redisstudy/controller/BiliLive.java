@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("live")
 @Log4j2
@@ -26,7 +28,7 @@ public class BiliLive {
 
     @GetMapping("ces")
     public Object ces(){
-        JSONObject liveRooms = biliLiveService.getLiveRooms();
+        List liveRooms = biliLiveService.getLiveRooms();
         return "pang";
     }
 

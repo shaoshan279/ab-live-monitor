@@ -36,4 +36,9 @@ public interface BilibiliAPI {
      * 获取直播列表数据
      */
     String GET_LIVE_LIST = "https://api.live.bilibili.com/room/v3/area/getRoomList";
+
+    /**
+     * 验证天选
+     */
+    String CHECK_ANCHOR = "https://api.live.bilibili.com/xlive/lottery-interface/v1/Anchor/Check";
 }
