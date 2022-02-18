@@ -10,15 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Log4j2
 public class BiliLiveServiceImpl implements BiliLiveService {
 
-    private int areaIds[] = {0 , 1 , 2, 3, 4, 5};
+    private int areaIds[] = { 1 , 2, 3, 4, 5 ,6};
 
-    private static volatile List list;
+    private static volatile List<String> list;
 
     @Autowired
     private BilibiliDelegete bilibiliDelegete;
@@ -33,17 +32,19 @@ public class BiliLiveServiceImpl implements BiliLiveService {
         int areaCount[] = getAreaCount();
         for (int i = 0; i < areaIds.length; i++) {
             page = 1;
-            for (int j = 0; j < Math.ceil(areaCount[i]/pageSize); j++) {
+            do{
                 JSONObject livingList = bilibiliDelegete.onLivingList(String.valueOf(i), String.valueOf(page), String.valueOf(pageSize), "online");
                 JSONObject data = (JSONObject) livingList.get("data");
                 JSONArray jsonArray = (JSONArray) data.get("list");
-                for (int k = 0; k < jsonArray.size(); k++) {
-
+                for (int j = 0; j < jsonArray.size(); j++) {
+                    String roomid = (String) jsonArray.getJSONObject(j).get("roomid");
+                    list.add(roomid);
                 }
                 if (livingList.get("code").equals(0)){
                     page++;
                 }
-            }
+            }while (page<Math.ceil(areaCount[i]/pageSize));
+            redisUtil.lSet("roomsNoFilter",list);
         }
         return null;
     }
