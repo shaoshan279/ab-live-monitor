@@ -78,6 +78,17 @@ public class BilibiliDelegete {
         return doGet(BilibiliAPI.ROOM_INFO_WEB_V1, params);
     }
 
+    /**
+     * 验证直播间是否有天选
+     * @param roomid
+     * @return
+     */
+    public JSONObject checkAnchorRoom(String roomid) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put("room_id", CollUtil.newArrayList(roomid));
+        return doGet(BilibiliAPI.CHECK_ANCHOR, params);
+    }
+
 
 
 

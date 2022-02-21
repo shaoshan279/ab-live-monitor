@@ -86,7 +86,15 @@ public class BiliLiveServiceImpl implements BiliLiveService {
     }
 
     public List filterAnchor(){
-
+        for (Integer roomid:list) {
+            JSONObject checkResult = bilibiliDelegete.checkAnchorRoom(String.valueOf(roomid));
+            if (checkResult.get("code").equals("0")){
+                if (!checkResult.get("data").toString().isEmpty()){
+                    JSONObject data = (JSONObject) checkResult.get("data");
+                    
+                }
+            }
+        }
         return null;
     }
 
