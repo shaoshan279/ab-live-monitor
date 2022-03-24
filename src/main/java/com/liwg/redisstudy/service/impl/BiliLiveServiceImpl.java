@@ -13,18 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
 public class BiliLiveServiceImpl implements BiliLiveService {
 
+    public static final String ROOMS = "roomsNoFilter";
+
+    public static final String ANCHOR = "roomsOfAnchor";
+
     private int areaIds[] = {1, 2, 3, 4, 5, 6};
-    @Autowired
-    private static volatile List<Integer> roomsOfFilter = new ArrayList<>();
 
-    @Autowired
     private static volatile List<Integer> list = new ArrayList<>();
-
 
     @Autowired
     private BilibiliDelegete bilibiliDelegete;
@@ -55,11 +56,6 @@ public class BiliLiveServiceImpl implements BiliLiveService {
                             if (livingList.get("code").equals(0)) {
                                 page++;
                             }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
                         } while (page < Math.ceil(areaCount[ii] / pageSize));
                     }
             );
@@ -77,12 +73,22 @@ public class BiliLiveServiceImpl implements BiliLiveService {
             }
         }
         if (!list.isEmpty()) {
-            redisUtil.lSet("roomsNoFilter", list);
+            //list 去重
+            List<Integer> collect = list.stream().distinct().collect(Collectors.toList());
+            redisUtil.del(ROOMS);
+            redisUtil.lSet(ROOMS, collect);
             return list;
-        }else {
+        }
+        else {
             return null;
         }
 
+    }
+
+    @Override
+    public Object getRedis(String key) {
+        // 0 至 -1 表示所有值
+        return redisUtil.lGet(key,0,-1);
     }
 
     public List filterAnchor(){

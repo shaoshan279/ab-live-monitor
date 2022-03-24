@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface BiliLiveService {
     List getLiveRooms();
+
+    Object getRedis(String key);
 }

@@ -69,13 +69,19 @@ public class BilibiliDelegete {
 
     /**
      * 获取直播间详情
-     * @param roomid
+     * @param roomId
      * @return
      */
-    public JSONObject getRoomInfo(String roomid) {
+    public JSONObject getRoomInfo(String roomId) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.put("room_id", CollUtil.newArrayList(roomid));
+        params.put("room_id", CollUtil.newArrayList(roomId));
         return doGet(BilibiliAPI.ROOM_INFO_WEB_V1, params);
+    }
+
+    public JSONObject checkAnchor(String roomId){
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.put("roomid", CollUtil.newArrayList(roomId));
+        return doGet(BilibiliAPI.CHECK_ANCHOR, params);
     }
 
 

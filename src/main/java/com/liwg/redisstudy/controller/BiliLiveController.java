@@ -1,6 +1,5 @@
 package com.liwg.redisstudy.controller;
 
-import cn.hutool.json.JSONObject;
 import com.liwg.redisstudy.component.BilibiliDelegete;
 import com.liwg.redisstudy.service.BiliLiveService;
 import lombok.extern.log4j.Log4j2;
@@ -14,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("live")
 @Log4j2
-public class BiliLive {
+public class BiliLiveController {
 
     private BilibiliDelegete bilibiliDelegete;
 
@@ -29,7 +28,13 @@ public class BiliLive {
     @GetMapping("ces")
     public Object ces(){
         List liveRooms = biliLiveService.getLiveRooms();
-        return "pang";
+        return liveRooms;
+    }
+
+    @GetMapping("getRedis")
+    public Object getRedis(String key){
+        List redislist = (List) biliLiveService.getRedis(key);
+        return redislist;
     }
 
 
