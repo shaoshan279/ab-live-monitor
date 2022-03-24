@@ -46,7 +46,7 @@ public class LiveTask {
     @Autowired
     private BiliLiveServiceImpl biliLiveService;
 
-    @Scheduled(fixedDelay  = 2400000)
+//    @Scheduled(fixedDelay  = 2400000)
     public void liveRoomsList(){
         // 开始时间
         final Instant start = Instant.now();
