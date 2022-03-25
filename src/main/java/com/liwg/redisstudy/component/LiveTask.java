@@ -33,7 +33,7 @@ public class LiveTask {
 
     private static volatile List<Integer> roomsOfFilter = new ArrayList<Integer>();
 
-    private int areaIds[] = {1, 2, 3, 4, 5, 6};
+    private int areaIds[] = {1, 2, 3, 5, 6, 9, 10, 11, 13};
 
     private static final Logger LOGGER = LoggerFactory.getLogger("Bili直播定时任务");
 
@@ -46,13 +46,14 @@ public class LiveTask {
     @Autowired
     private BiliLiveServiceImpl biliLiveService;
 
-//    @Scheduled(fixedDelay  = 2400000)
+    @Scheduled(fixedDelay  = 2400000)
     public void liveRoomsList(){
         // 开始时间
         final Instant start = Instant.now();
+        list.clear();
         int pageSize = 50;
         int areaCount[] = biliLiveService.getAreaCount();
-        ExecutorService pool = Executors.newFixedThreadPool(6);
+        ExecutorService pool = Executors.newFixedThreadPool(1000);
         for (int i = 0; i < areaIds.length; i++) {
             final int ii = i;
             for (int j = 1; j <Math.ceil(areaCount[ii] / pageSize) ; j++) {
@@ -93,10 +94,11 @@ public class LiveTask {
         LOGGER.info("全区直播房间查询耗时为:{}",duration);
     }
 
-    @Scheduled(fixedDelay  = 600000)
+    @Scheduled(fixedDelay  = 500000)
     public void checkAnchor(){
         // 开始时间
         final Instant start = Instant.now();
+        roomsOfFilter.clear();
         List<Object> roomsNoFilter= redisUtil.lGet(BiliLiveServiceImpl.ROOMS, 0, -1);
         if (roomsNoFilter.size()==0){
             return;

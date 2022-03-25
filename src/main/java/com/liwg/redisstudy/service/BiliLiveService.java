@@ -9,4 +9,6 @@ public interface BiliLiveService {
     List getLiveRooms();
 
     Object getRedis(String key);
+
+    Object getRedisListSize(String key);
 }

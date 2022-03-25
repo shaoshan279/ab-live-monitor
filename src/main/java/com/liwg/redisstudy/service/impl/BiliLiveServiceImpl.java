@@ -23,7 +23,7 @@ public class BiliLiveServiceImpl implements BiliLiveService {
 
     public static final String ANCHOR = "roomsOfAnchor";
 
-    private int areaIds[] = {1, 2, 3, 4, 5, 6};
+    private int areaIds[] = {1, 2, 3, 5, 6, 9, 10, 11, 13};
 
     private static volatile List<Integer> list = new ArrayList<>();
 
@@ -91,6 +91,13 @@ public class BiliLiveServiceImpl implements BiliLiveService {
         return redisUtil.lGet(key,0,-1);
     }
 
+    @Override
+    public Object getRedisListSize(String key) {
+        // 0 至 -1 表示所有值
+        List o = (List) redisUtil.lGet(key, 0, -1).get(0);
+        int size = o.size();
+        return size;
+    }
 
     /**
      * live是否在线
@@ -132,7 +139,7 @@ public class BiliLiveServiceImpl implements BiliLiveService {
      * @return
      */
     public int[] getAreaCount() {
-        int areaCount[] = new int[6];
+        int areaCount[] = new int[9];
         for (int i = 0; i < areaCount.length; i++) {
             JSONObject countResult = bilibiliDelegete.livingCount(String.valueOf(areaIds[i]));
             JSONObject data = (JSONObject) countResult.get("data");

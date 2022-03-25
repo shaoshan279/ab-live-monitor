@@ -15,8 +15,6 @@ import java.util.List;
 @Log4j2
 public class BiliLiveController {
 
-    private BilibiliDelegete bilibiliDelegete;
-
     @Autowired
     private  BiliLiveService biliLiveService;
 
@@ -35,6 +33,12 @@ public class BiliLiveController {
     public Object getRedis(String key){
         List redislist = (List) biliLiveService.getRedis(key);
         return redislist;
+    }
+
+    @GetMapping("getRedisSize")
+    public Object getRedisSize(String key){
+        int size = (int) biliLiveService.getRedisListSize(key);
+        return size;
     }
 
 
